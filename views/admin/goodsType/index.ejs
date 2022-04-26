@@ -1,0 +1,51 @@
+<%- include ('../public/page_header.ejs')%>
+
+<div class="container-fluid">
+  <div class="row">
+
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead>
+          <tr class="th">
+            <th>名称</th>
+            <th>简介</th>
+            <th class="text-center">时间</th>
+            <th class="text-center">状态</th>
+            <th class="text-center">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for (var i=0;i<list.length;i++) { %>
+            <tr>
+              <td><%= list[i].title %></td>
+              <td><%= list[i].description %></td>
+
+              <td><%= helper.formatTime(list[i].add_time) %></td>
+
+              <td class="text-center">
+                <% if(list[i].status==1) { %>
+                  <img src="/static/admin/images/yes.gif" onclick="app.changeStatus(this, 'goodsType','status', '<%= list[i]._id %>', '<%=config.adminPath%>')" />
+                <% } else { %>
+                  <img src="/static/admin/images/no.gif" onclick="app.changeStatus(this, 'goodsType','status', '<%= list[i]._id %>', '<%=config.adminPath%>')"/>
+                <% } %>
+              </td>
+
+              <td class="text-center">  
+                <a href="/<%= config.adminPath %>/goodsTypeAttribute?_id=<%= list[i]._id %>">属性列表</a>   &nbsp;&nbsp;&nbsp;  
+                <a href="/<%= config.adminPath %>/goodsType/edit?_id=<%= list[i]._id %>">修改</a>   &nbsp;&nbsp;&nbsp;             
+                <a class="delete" href="/<%= config.adminPath %>/goodsType/delete?_id=<%= list[i]._id %>">删除</a>    
+         
+              </td>
+            </tr>
+
+          <% } %>
+
+        </tbody>
+      </table>
+        
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

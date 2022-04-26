@@ -1,0 +1,107 @@
+<%- include ('../public/page_header.ejs')%>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="panel panel-default">
+      <div class="panel-heading clear">
+              
+              
+              <a href="/<%= config.adminPath %>/goodsCate/add" class="btn btn-primary fl">增加商品分类</a>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead>
+          <tr class="th">
+            <th>名称</th>
+            <th>简介</th>
+            <th>图片</th>
+            <th>跳转</th>
+            <th>模板</th>
+            <th>排序</th>
+            <th>关键字</th>
+
+       
+            <th class="text-center">时间</th>
+            <th class="text-center">状态</th>
+            <th class="text-center">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for (var i=0;i<list.length;i++) { %>
+            <tr>
+              <td><%= list[i].title %></td>
+              <td><%= list[i].description %></td>
+              <td><img src="" width="80"/></td>
+              <td><%= list[i].link %></td>
+              <td><%= list[i].template %></td>
+              <td class="text-center">
+                <span onclick="app.editNum(this, 'goodsCate', 'sort', '<%=list[i]._id %>', '<%=config.adminPath%>')">
+                  <%= list[i].sort %>
+                </span>
+              </td>
+              <td><%= list[i].keywords %></td>
+
+              <td><%= helper.formatTime(list[i].add_time) %></td>
+
+              <td class="text-center">
+                <% if(list[i].status==1) { %>
+                  <img src="/static/admin/images/yes.gif" onclick="app.changeStatus(this, 'goodsCate', 'status', '<%= list[i]._id %>', '<%=config.adminPath%>')" />
+                <% } else { %>
+                  <img src="/static/admin/images/no.gif" onclick="app.changeStatus(this, 'goodsCate', 'status', '<%= list[i]._id %>', '<%=config.adminPath%>')"/>
+                <% } %>
+              </td>
+
+              <td class="text-center">   
+                <a href="/<%= config.adminPath %>/goodsCate/edit?_id=<%= list[i]._id %>">修改</a>   &nbsp;&nbsp;&nbsp;             
+                <a class="delete" href="/<%= config.adminPath %>/goodsCate/delete?_id=<%= list[i]._id %>">删除</a>    
+         
+              </td>
+            </tr>
+            <% for (var j=0;j<list[i].items.length;j++) { %>
+              <tr>
+                <td>　　--<%= list[i].items[j].title %></td>
+                <td><%= list[i].items[j].description %></td>
+                <td><img src="/<%= list[i].items[j].cate_img %>" width="80"/></td>
+                <td><%= list[i].items[j].link %></td>
+                <td><%= list[i].items[j].template %></td>
+                <td class="text-center">
+                  <span onclick="app.editNum(this, 'goodsCate', 'sort', '<%=list[i].items[j]._id %>', '<%=config.adminPath%>')">
+                    <%= list[i].items[j].sort %>
+                  </span>
+                </td>
+                <td><%= list[i].items[j].keywords %></td>
+  
+                <td><%= helper.formatTime(list[i].items[j].add_time) %></td>
+  
+                <td class="text-center">
+                  <% if(list[i].items[j].status==1) { %>
+                    <img src="/static/admin/images/yes.gif" onclick="app.changeStatus(this, 'goodsCate', 'status', '<%= list[i].items[j]._id %>', '<%=config.adminPath%>')" />
+                  <% } else { %>
+                    <img src="/static/admin/images/no.gif" onclick="app.changeStatus(this, 'goodsCate', 'status', '<%= list[i].items[j]._id %>', '<%=config.adminPath%>')"/>
+                  <% } %>
+                </td>
+  
+                <td class="text-center">  
+                  <a href="/<%= config.adminPath %>/goodsCate/edit?_id=<%= list[i].items[j]._id %>">修改</a>   &nbsp;&nbsp;&nbsp;             
+                  <a class="delete" href="/<%= config.adminPath %>/goodsCate/delete?_id=<%= list[i].items[j]._id %>">删除</a>    
+           
+                </td>
+              </tr>
+  
+            <% } %>
+
+
+          <% } %>
+
+
+        </tbody>
+      </table>
+        
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

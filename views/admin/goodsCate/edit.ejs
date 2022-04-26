@@ -1,0 +1,67 @@
+<%- include ('../public/page_header.ejs')%>
+
+<div class="container-fluid">
+    <div class="row">
+       
+        <div class="panel panel-default">              
+            <div class="panel-heading">
+              编辑商品类型
+            </div>
+            <div class="panel-body">
+                <div class="table-responsive form-input">
+                    <form action="/<%=config.adminPath%>/goodsCate/doEdit" method="post" enctype="multipart/form-data">
+                        <ul>
+                            <input type="hidden" name="_id" value="<%= cateData._id %>"/>
+                            <li> <span>分类名称:</span> <input type="text" name="title" value="<%= cateData.title %>"/></li>
+                            <li> <span>上级分类:</span> 
+                              <select name="pid" id="pid">
+                                <option value="0" >顶级分类</option>
+                                <% for(var i=0;i<cateList.length;i++) { %>
+                                  <% if (cateList[i]._id.toString()==cateData.pid.toString()) { %>
+                                    <option selected value="<%=cateList[i]._id%>" ><%= cateList[i].title %></option>
+                                  <% }else{ %>
+                                    <option value="<%=cateList[i]._id%>" ><%= cateList[i].title %></option>
+                                  <% } %>
+                                <% } %>
+
+                              </select>
+                            </li>
+
+                            <li> <span>分类图片:</span> <input type="file" name="cate_img" /></li>
+                              <% if (cateData.cate_img) { %>
+                                <span></span>
+                                <img class="pic" src="/<%= cateData.cate_img %>" width="80"/>
+                              <% } %>
+                            <li> <span>跳转地址:</span> <input type="text" name="link" value="<%= cateData.link %>" /></li>
+                            <li> <span>分类模板:</span> <input type="text" name="template" value="<%= cateData.template %>" /></li>
+                            <li> <span>Seo标题:</span> <input type="text" name="sub_title" value="<%= cateData.sub_title %>" /></li>
+                            <li> <span>Seo关键字:</span> <input type="text" name="keywords" value="<%= cateData.keywords %>" /></li>
+                            <li> <span>Seo描述:</span> <textarea name="description" id="description" cols="60" rows="8"><%= cateData.description %></textarea>
+                            <li> <span>排序:</span> <input type="text" name="sort" value="<%= cateData.sort %>" /></li>
+
+                            <li>  <span>状　态:</span>
+                                    
+                              <input type="radio" name="status" <% if(cateData.status==1) { %> checked <%}%> value="1" id="a"/> 
+                              <label for="a">显示</label>    
+                              
+                              <input type="radio"  <% if(cateData.status==0) { %> checked <%}%>  name="status" value="0" id="b"/>
+                              <label for="b">隐藏</label> 　</li>
+                    
+                            <li>
+                                <br/>
+                                <button type="submit" class="btn btn-primary">提交</button>
+                            </li>
+
+                        </ul>
+
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

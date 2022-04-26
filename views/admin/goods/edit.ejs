@@ -1,0 +1,270 @@
+<%- include ('../public/page_header.ejs')%>
+
+<!-- 富文本编辑器 wysiwyg 依赖 -->
+<link href="/static/admin/wysiwyg-editor/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="/static/admin/wysiwyg-editor/js/froala_editor.pkgd.min.js"></script>
+<script type="text/javascript" src="/static/admin/wysiwyg-editor/js/zh_cn.js"></script>
+
+<!-- webuploader多图片上传依赖 -->
+<!-- <script src="jquery.js"></script> -->
+<link rel="stylesheet" type="text/css" href="/static/admin/webuploader/css/webuploader.css">
+<link rel="stylesheet" type="text/css" href="/static/admin/webuploader/css/diyUpload.css">
+<script type="text/javascript" src="/static/admin/webuploader/js/webuploader.html5only.min.js"></script>
+<script type="text/javascript" src="/static/admin/webuploader/js/diyUpload.js"></script>
+
+
+  <div class="container-fluid">
+    <div class="row">
+        
+      <div class="panel panel-default">              
+        <div class="panel-heading">
+          增加商品
+        </div>
+        <div class="panel-body">
+          <div class="table-responsive form-input goods_content">
+
+            <form action="/<%=config.adminPath%>/goods/doEdit" method="post" enctype="multipart/form-data">
+              <input type="hidden" name="_id" value="<%= goods._id %>" />
+              <input type="hidden" name="prevPage" value="<%= prevPage %>" />
+              <!-- Nav tabs -->
+              <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="#general"  role="tab" data-toggle="tab">通用信息</a></li>
+                <li role="presentation"><a href="#detail" role="tab" data-toggle="tab">详细描述</a></li>
+                <li role="presentation"><a href="#mix"  role="tab" data-toggle="tab">商品属性</a></li>
+                <li role="presentation"><a href="#attribute"  role="tab" data-toggle="tab">规格与包装</a></li>
+                <li role="presentation"><a href="#photo"  role="tab" data-toggle="tab">商品相册</a></li>              
+              </ul>
+              <!-- Tab panes -->
+              <div class="tab-content">
+                <!-- Tab panes 1  -->
+                <div role="tabpanel" class="tab-pane active" id="general">
+                  <ul class="form_input">
+                        <li> <span> 商品标题:</span> <input type="text" name="title" class="input" value="<%=goods.title%>"/></li>                            
+                        <li> <span> 附属标题:</span> <input type="text" name="sub_title" class="input" value="<%=goods.sub_title%>"/></li>
+                        <li> <span>商品版本:</span> <input type="text" name="goods_version" class="input" value="<%=goods.goods_version%>"/></li>                            
+                        <li> <span>所属分类:</span> 
+                          <select name="cate_id" id="cate_id">
+                            <% for (var i=0;i<goodsCate.length;i++) { %>
+                              <option value="<%= goodsCate[i]._id %>" <% if(goods.cate_id.toString()==goodsCate[i]._id.toString()) { %>selected<% } %> ><%= goodsCate[i].title %></option>
+                              <% for (var j=0;j<goodsCate[i].items.length;j++) { %>
+                                <option value="<%= goodsCate[i].items[j]._id %>" <% if(goods.cate_id.toString()==goodsCate[i].items[j]._id.toString()){ %>selected<% } %>  >-----<%= goodsCate[i].items[j].title %></option>
+                              <% } %>
+                            <% } %>
+                          </select>
+    
+                        <input type="hidden" name="cname" id="cname" />    
+    
+                        </li>
+                        <li> <span>商品图片:</span> 
+                          <input type="file" name="goods_img" /> <br>
+                          <img src="/<%=goods.goods_img%>" class="pic" width="100">
+                        </li>
+                        <li> <span>商品价格:</span> <input type="text" name="shop_price" value="<%=goods.shop_price%>"/></li>
+                        <li> <span>商品原价:</span>  <input type="text" name="market_price" value="<%=goods.market_price%>"/></li>
+
+                        <li> <span>商品状态:</span>　
+                            <input type="radio" value="1" name="status" <% if(goods.status==1) {%>checked<% } %> /> 显示                                    　
+                            <input type="radio" value="0" name="status" <% if(goods.status==0) {%>checked<% } %>/>  隐藏
+                        </li>
+    
+                        <li> <span>加入推荐:</span>　
+                            <input type="checkbox" value="1" name="is_best" <% if(goods.is_best==1) {%>checked<% } %> /> 精品
+                            <input type="checkbox" value="1" name="is_hot" <% if(goods.is_hot==1) {%>checked<% } %> /> 热销
+                            <input type="checkbox" value="1" name="is_new" <% if(goods.is_new==1) {%>checked<% } %> /> 新品
+                        </li>
+                  </ul>
+                </div>
+                <!-- Tab panes 2  -->
+                <div role="tabpanel" class="tab-pane" id="detail">
+                  <textarea name="goods_content" id="content" cols="100" rows="8"><%= goods.goods_content %></textarea>
+                </div>
+                <!-- Tab panes 3  -->
+                <div role="tabpanel" class="tab-pane" id="mix">                                 
+                    <ul class="form_input">
+
+                      <li> <span>商品颜色:</span>
+                        <% for (let i=0;i<goodsColor.length;i++) { %>
+                          <input type="checkbox" name="goods_color[]" value="<%= goodsColor[i]._id %>" id="color_<%= goodsColor[i]._id %>" <% if(goodsColor[i].checked==1) {%>checked<% } %> />
+                          <label for="color_<%=goodsColor[i]._id%>"><%= goodsColor[i].color_name %></label>
+                        <% } %>
+                      
+                      </li>
+                      <li> <span>关联商品:</span>
+                          <input type="text" name="relation_goods" class="relation_goods"  value="<%= goods.relation_goods %>" />  <i>填写关联商品的id 多个以逗号隔开 格式：23,24,39</i>
+                      </li>      
+                      <li> <span>关联赠品:</span>
+                          <input type="text" name="goods_gift" class="goods_gift"  value="<%= goods.goods_gift %>" />  <i>可为空 格式：23-2,39-5 说明：例如23-2 中的23表示商品id,2表示商品数量</i>
+                      </li>    
+                      <li> <span>关联配件:</span> 
+                          <input type="text" name="goods_fitting" class="goods_fitting"  value="<%= goods.goods_fitting %>" />  <i>可为空 格式：23-2,39-5 说明：例如23-2 中的23表示商品id,2表示商品数量</i>
+                      </li>    
+
+                      <li> <span>更多属性:</span>
+                          <input type="text" name="goods_attr" class="goods_attr"  value="<%= goods.goods_attr %>" />  <i> 格式:  颜色:红色,白色,黄色 | 尺寸:41,42,43</i>
+                      </li>
+
+                      <li> <span>Seo关键词:</span>                           
+                        <input type="text" name="goods_keywords" class="input" value="<%=goods.goods_keywords%>"/>  
+                      </li>
+
+                      <li> <span>Seo描述:</span>                                                
+                        <textarea name="goods_desc" id="goods_desc" cols="100" rows="2"><%=goods.goods_desc%></textarea>
+                      </li>
+                    </ul>
+                </div>
+                <!-- Tab panes 4  -->
+                <div role="tabpanel" class="tab-pane" id="attribute">
+                    <ul class="form_input">
+                        <li> <span>商品类型:　</span>
+                            
+                            <select name="goods_type_id" id="goods_type_id">
+
+                                <option value="0">--请选择商品类型--</option>
+                                <% for (let i=0;i<goodsType.length;i++) { %>
+                                  <option value="<%= goodsType[i]._id %>"  <% if(goods.goods_type_id.toString()==goodsType[i]._id.toString()) {%>selected<% } %>><%= goodsType[i].title %></option>
+                                <% } %>
+                            </select>
+
+                        </li>
+                    </ul>
+
+                    <ul class="form_input" id="goods_type_attribute">
+                      <%- goodsAttr %>
+                    </ul>
+                </div>
+                <!-- Tab panes 5  -->
+                <div role="tabpanel" class="tab-pane" id="photo">
+                  <div id="goods_image">
+                    <ul id="goods_image_list" class="goods_image_list clear">
+
+                      <% for (var i=0;i<goodsImage.length;i++) { %>
+                        <li>
+                          <img class="pic" src="<%=goodsImage[i].img_url%>" />
+
+                          <div class="color_list">
+                            <select class="relation_goods_color" goods_image_id="<%=goodsImage[i]._id%>">
+                              <option value="0">关联颜色</option>
+                                <% for (var j=0;j<goodsColor.length;j++) { %>
+                                  <% if (goodsColor[j].checked) { %>  <!-- 只显示商品拥有的颜色  -->
+                                    <option value="<%=goodsColor[j]._id%>" <% if(goodsImage[i].color_id.toString()==goodsColor[j]._id.toString()){ %>selected<%}%> >
+                                      <%= goodsColor[j].color_name %>
+                                    </option>
+                                  <% } %>
+                                <% } %>
+                            </select>
+                          </div>
+                        
+                          <div class="goods_image_delete" goods_image_id="<%=goodsImage[i]._id%>"></div>
+                        </li>
+                      <% } %>
+                    </ul>
+
+                  </div>
+                    
+                  <div class="photoUploader" id="photoUploader"></div>
+
+                  <div class="photoList" id="photoList"></div>
+
+                </div>
+                <!-- Tab panes end  -->
+              </div>
+
+              <button type="submit" class="btn btn-success goods_content_btn">提交</button>
+            
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+
+    // 富文本编辑器 初始化
+    new FroalaEditor('#content', {
+      height:300,
+      language: 'zh_cn',
+      toolbarButtons: [ ['bold', 'strikethrough', 'subscript', 'superscript', 'outdent', 'indent', 'clearFormatting','insertVideo', 'insertTable', 'html','insertImage'] ,['undo', 'redo']],
+      toolbarButtonsXS: [ ['bold', 'strikethrough', 'subscript', 'superscript', 'outdent', 'indent', 'clearFormatting','insertVideo', 'insertTable', 'html','insertImage'] , ['undo', 'redo']],
+      imageUploadURL: '/<%=config.adminPath%>/goods/doImageUpload',
+    });
+
+    // 监听商品类型切换， 加载响应的 goodsTypeAttribute
+    $(function(){
+      // 获取商品类型属性
+      $("#goods_type_id").change(function(){
+        var cate_id=$(this).val();
+        
+        var str='';
+        var data=''; // 清空data
+
+
+        $.get('/<%=config.adminPath%>/goods/getGoodsTypeAttribute?cate_id='+cate_id, function(response){
+          data = response.result;
+          for(var i=0;i<data.length;i++) {
+            if (data[i].attr_type==1) {
+              str += '<li><span>'+data[i].title+':</span><input type="hidden" name="attr_id_list[]" value="'+data[i]._id+'" />'
+                +' <input type="text" name="attr_value_list[]" /></li>'
+            } else if (data[i].attr_type==2) {
+              str += '<li><span>'+data[i].title+':</span><input type="hidden" name="attr_id_list[]" value="'+data[i]._id+'" />'
+                + '<textarea cols="50" rows="3" name="attr_value_list[]"></textarea></li>'
+            } else if (data[i].attr_type==3) {
+              var attrArray=data[i].attr_value.split('\n'); // 以空格来分割数组
+              str += '<li><span>'+data[i].title+':</span><input type="hidden" name="attr_id_list[]" value="'+data[i]._id+'" />';
+              str += '<select name="attr_value_list[]">';
+                for(var j=0;j<attrArray.length;j++){
+                  str+='<option value="'+attrArray[j]+'">'+attrArray[j]+'</option>';
+                }
+              str+='</select>';    
+              str+= '</li>';
+            }
+          }
+          $("#goods_type_attribute").html(str);
+        })
+      })
+    })
+
+    // 上传图库
+    $(function(){
+      $('#photoUploader').diyUpload({
+        url: '/<%=config.adminPath%>/goods/doImageUpload',
+        success: function(response) {
+          var photoStr = '<input type="hidden" name="goods_image_list[]" value='+response.link+' />';
+
+          $('#photoList').append(photoStr);
+        },
+        error: function(err) {
+          console.log(err);
+        }
+      });
+
+      // 更新图库对应的颜色
+      $(".relation_goods_color").change(function() {
+        var color_id = $(this).val();    // select框的值
+        var goods_image_id = $(this).attr('goods_image_id');  
+
+        $.get('/<%=config.adminPath%>/goods/changeGoodsImageColor',{color_id:color_id,goods_image_id:goods_image_id},function(response){
+          console.log(response);
+        });
+      });
+
+      // 删除图片信息
+      $(".goods_image_delete").click(function() {
+        var flag = confirm('您确定要删除吗？');
+        if (flag) {
+          var goods_image_id = $(this).attr('goods_image_id');
+          var _that = this;  //
+
+          $.get('/<%=config.adminPath%>/goods/removeGoodsImage',{goods_image_id:goods_image_id},function(response){
+            if(response.success){
+              $(_that).parent().remove();
+            }
+          });
+        }
+      })
+    })
+  </script>
+
+</body>
+</html>
